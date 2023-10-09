@@ -78,6 +78,10 @@ def bfs(start, goal):
 
     return []  # If the goal cannot be reached, return an empty path
 
+def iterative(start, goal):
+    pass
+
+
 #declaring different functions to call
 function_dict = {'bfs': bfs}
 
