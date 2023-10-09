@@ -29,7 +29,7 @@ if len(sys.argv) != 3:
 
 # Get the map file name and algorithm from command-line arguments
 map_file = sys.argv[1]
-algorithm = sys.argv[2]
+algorithm = sys.argv[2].lower()
 
 # Read the map and extract size, start, goal, and grid
 size, start, goal, grid = read_map(map_file)
@@ -78,8 +78,14 @@ def bfs(start, goal):
 
     return []  # If the goal cannot be reached, return an empty path
 
+#declaring different functions to call
+function_dict = {'bfs': bfs}
+
+
 # Call the BFS function and get the result
-path = bfs(start, goal)
+
+#Testing code for the user to choose their algorithm of choice to search
+path = function_dict[algorithm](start, goal)
 
 if path:
     print("The path from %s to %s is" %(start, goal))
