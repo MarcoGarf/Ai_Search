@@ -82,8 +82,8 @@ def bfs(start, goal):
 path = bfs(start, goal)
 
 if path:
-    print(f"The path from {start} to {goal} is:")
+    print("The path from %s to %s is" %(start, goal))
     for coordinate in path:
         print(coordinate)
 else:
-    print(f"There is no path from {start} to {goal}.")
+    print("There is no path from %s to %s." %(start, goal))
