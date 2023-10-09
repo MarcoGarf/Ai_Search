@@ -83,7 +83,7 @@ def iterative(start, goal):
 
 
 #declaring different functions to call
-function_dict = {'bfs': bfs}
+function_dict = {'bfs': bfs, 'iterative': iterative}
 
 
 # Call the BFS function and get the result
