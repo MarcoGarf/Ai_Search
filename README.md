@@ -14,7 +14,7 @@ When inputting what files we actually want to use, we don't include the " symbol
 
 python Breath_First_Search.py test_case_2.txt bfs
 
-As you can see, there are no " symbols when we type our files and the search we want. When running this program with the test cases, make sure all files are in the same directory/folder as to not cause any problems with file locations. When inputting the type of search, they will be acronyms. Obviously right now the only search we have implemented is breadth first search labeled as "bfs". Upper or lower case doesn't matter. 
+As you can see, there are no " symbols when we type our files and the search we want. When running this program with the test cases, make sure all files are in the same directory/folder as to not cause any problems with file locations. When inputting the type of search, they will be acronyms. Obviously right now the only search we have implemented is breadth first search labeled as "bfs". Upper or lower case doesn't matter, the program will convert your text automatically as long as you spell the acronym correctly. 
 
 There is also a small typo in the file name currently. The file name right is now is "Breath_First_Search.py" instead of "Breadth_First_Search.py"
 
