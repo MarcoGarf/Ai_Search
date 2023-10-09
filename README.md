@@ -8,7 +8,7 @@ HOW TO USE THE SEARCH
 
 The terminal command used to run this program is as follows:
 
-python <filename> <test case> <type of search>
+python <!----- <filename> <test case> <type of search> ----->
 
 For example, if we wanted to test the file labeled "test_case_2.txt" with our breadth first search we would do this:
 
