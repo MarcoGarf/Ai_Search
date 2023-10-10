@@ -78,12 +78,38 @@ def bfs(start, goal):
 
     return []  # If the goal cannot be reached, return an empty path
 
-def iterative(start, goal):
-    pass
+def iddfs(start, goal):
+    depth_limit = 0
+    
+    while True:
+        result = dls(start, goal, depth_limit)
+        if result is not None:
+            return result  # Goal found
+        depth_limit += 1  # Increase depth limit if goal not found at current depth
+
+def dls(node, goal, depth_limit):
+    stack = [(node, [])]
+    
+    while stack:
+        (x, y), path = stack.pop()  # Pop the last coordinate and its corresponding path
+
+        if (x, y) == goal:
+            return path + [(x, y)]  # Return the path to the goal
+
+        if len(path) < depth_limit:
+            for dx, dy in moves:
+                new_x, new_y = x + dx, y + dy  # Calculate new coordinates by adding the move (dx, dy) to the current coordinates (x, y)
+
+                if is_valid(new_x, new_y):
+                    # Calculate the new coordinates based on the possible moves
+                    new_path = path + [(x, y)]  # Extend the path
+                    stack.append(((new_x, new_y), new_path))
+
+    return None  # Goal not found at this depth
 
 
 #declaring different functions to call
-function_dict = {'bfs': bfs, 'iterative': iterative}
+function_dict = {'bfs': bfs, 'iddfs': iddfs}
 
 
 # Call the BFS function and get the result
