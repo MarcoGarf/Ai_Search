@@ -1,3 +1,4 @@
+import time
 from collections import deque
 import sys
 
@@ -57,26 +58,55 @@ def is_valid(x, y):
 
 # Breadth-First Search (BFS) function
 def bfs(start, goal):
+    start_time = time.time()  # Record the start time
     queue = deque([(start, [])])  # Initialize the queue with the start coordinate and path
     visited = set()               # Create a set to keep track of visited coordinates
+    nodes_expanded = 0            # Initialize the number of nodes expanded
+    max_nodes_held_in_memory = 0  # Initialize the maximum number of nodes held in memory
 
     while queue:
-        (x, y), path = queue.popleft() # Dequeue the first coordinate and its corresponding path
-        
+        # Update the maximum number of nodes held in memory
+        max_nodes_held_in_memory = max(max_nodes_held_in_memory, len(queue))
+
+        (x, y), path = queue.popleft()  # Dequeue the first coordinate and its corresponding path
+        nodes_expanded += 1
 
         if (x, y) == goal:
-            return path + [(x, y)]  # Return the path to the goal
+            end_time = time.time()  # Record the end time
+            runtime_ms = (end_time - start_time) * 1000  # Calculate runtime in milliseconds
+            return path + [(x, y)], nodes_expanded, max_nodes_held_in_memory, runtime_ms  # Return the path, nodes expanded, max nodes held, and runtime
 
-        for dx, dy in moves: # Iterate through the possible moves defined in the 'moves' list
-            new_x, new_y = x + dx, y + dy # Calculate new coordinates by adding the move (dx, dy) to the current coordinates (x, y)
+        for dx, dy in moves:  # Iterate through the possible moves defined in the 'moves' list
+            new_x, new_y = x + dx, y + dy  # Calculate new coordinates by adding the move (dx, dy) to the current coordinates (x, y)
 
             if is_valid(new_x, new_y) and (new_x, new_y) not in visited:
-                 # Calculate the new coordinates based on the possible moves
+                # Calculate the new coordinates based on the possible moves
                 new_path = path + [(x, y)]  # Extend the path
                 queue.append(((new_x, new_y), new_path))
                 visited.add((new_x, new_y))  # Mark the state as visited
 
-    return []  # If the goal cannot be reached, return an empty path
+    return [], nodes_expanded, max_nodes_held_in_memory, None  # If the goal cannot be reached, return appropriate values
+
+# Perform BFS search
+path, nodes_expanded, max_nodes_held_in_memory, runtime_ms = bfs(start, goal)
+
+# Print the results
+if not path:
+    print("No path found.")
+else:
+    cost_of_path = len(path) - 1
+    print("Cost of the path found:", cost_of_path)
+    print("Number of nodes expanded:", nodes_expanded)
+    print("Max nodes held in memory:", max_nodes_held_in_memory)
+    print("Runtime in milliseconds:", runtime_ms)
+    print("The path from %s to %s is" %(start, goal))
+    for coordinate in path:
+        print(coordinate)
+
+# Check for the 3-minute time cutoff
+if runtime_ms is not None and runtime_ms > 180000:
+    print("Time cutoff reached (3 minutes).")
+
 
 def iddfs(start, goal):
     depth_limit = 0
