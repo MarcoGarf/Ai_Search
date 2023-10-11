@@ -92,7 +92,7 @@ def bfs(start, goal):
 
 
 def iddfs(start, goal):
-    depth_limit = 1
+    depth_limit = 0
     
     while True:
         path, cost, nodes_expanded, max_nodes_held_in_memory, runtime_ms, found = dls(start, goal, depth_limit)
