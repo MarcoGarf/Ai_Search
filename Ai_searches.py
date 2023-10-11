@@ -186,7 +186,7 @@ def astar(start, goal):
         if current_node.getPos() == goal:
             end_time = time.time()
             runtime_ms = (end_time-start_time)*1000 # Calculate runtime in milliseconds
-            return calculatePath(current_node), calculateTotalCost(current_node), nodes_expanded, runtime_ms, max_nodes_held_in_memory
+            return calculatePath(current_node), calculateTotalCost(current_node), nodes_expanded, max_nodes_held_in_memory, runtime_ms
         
         # Iterate through possible moves
         for dx, dy in moves:
@@ -204,7 +204,7 @@ def astar(start, goal):
     # Return if search failed
     end_time = time.time()
     runtime_ms = (end_time-start_time)*1000
-    return [], 0, nodes_expanded, runtime_ms, max_nodes_held_in_memory
+    return [], 0, nodes_expanded, max_nodes_held_in_memory, runtime_ms
 
 #declaring different functions to call
 function_dict = {'bfs': bfs, 'iddfs': iddfs, 'astar': astar}
