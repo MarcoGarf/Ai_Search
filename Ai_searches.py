@@ -92,12 +92,12 @@ def bfs(start, goal):
 
 
 def iddfs(start, goal):
-    depth_limit = 0
+    depth_limit = 1
     
     while True:
-        result = dls(start, goal, depth_limit)
-        if result is not None:
-            return result  # Goal found
+        path, cost, nodes_expanded, max_nodes_held_in_memory, runtime_ms, found = dls(start, goal, depth_limit)
+        if found:
+            return path, cost, nodes_expanded, max_nodes_held_in_memory, runtime_ms  # Goal found
         depth_limit += 1  # Increase depth limit if goal not found at current depth
 
 def dls(node, goal, depth_limit):
@@ -107,7 +107,7 @@ def dls(node, goal, depth_limit):
     max_nodes_held_in_memory = 0
     
     while stack:
-
+        print(stack)
         max_nodes_held_in_memory = max(max_nodes_held_in_memory, len(stack))    
 
         (x, y), path, cost = stack.pop()  # Pop the last coordinate and its corresponding path
@@ -116,7 +116,7 @@ def dls(node, goal, depth_limit):
         if (x, y) == goal:
             end_time = time.time()
             runtime_ms = (end_time - start_time) * 1000
-            return path + [(x, y)], cost, nodes_expanded, max_nodes_held_in_memory, runtime_ms # Return the path to the goal
+            return path + [(x, y)], cost, nodes_expanded, max_nodes_held_in_memory, runtime_ms, True # Return the path to the goal
 
         if len(path) < depth_limit:
             for dx, dy in moves:
@@ -128,7 +128,7 @@ def dls(node, goal, depth_limit):
                     new_cost = cost + 1
                     stack.append(((new_x, new_y), new_path, new_cost))
 
-    return [], 0, nodes_expanded, max_nodes_held_in_memory, None  # Goal not found at this depth
+    return [], 0, nodes_expanded, max_nodes_held_in_memory, None, False  # Goal not found at this depth
 
 # Node class for storing parent, cost, and coordinates
 class Node:
