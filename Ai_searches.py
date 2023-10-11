@@ -101,20 +101,22 @@ def iddfs(start, goal):
         depth_limit += 1  # Increase depth limit if goal not found at current depth
 
 def dls(node, goal, depth_limit):
-    
-    stack = [(node, [])]
-    
+    start_time = time.time()
+    stack = [(node, [], 0)]
+    nodes_expanded = 0
+    max_nodes_held_in_memory = 0
     
     while stack:
 
-        
+        max_nodes_held_in_memory = max(max_nodes_held_in_memory, len(stack))    
 
-        (x, y), path = stack.pop()  # Pop the last coordinate and its corresponding path
-   
+        (x, y), path, cost = stack.pop()  # Pop the last coordinate and its corresponding path
+        nodes_expanded += 1
 
         if (x, y) == goal:
-            
-            return path + [(x, y)] # Return the path to the goal
+            end_time = time.time()
+            runtime_ms = (end_time - start_time) * 1000
+            return path + [(x, y)], cost, nodes_expanded, max_nodes_held_in_memory, runtime_ms # Return the path to the goal
 
         if len(path) < depth_limit:
             for dx, dy in moves:
@@ -123,9 +125,10 @@ def dls(node, goal, depth_limit):
                 if is_valid(new_x, new_y):
                     # Calculate the new coordinates based on the possible moves
                     new_path = path + [(x, y)]  # Extend the path
-                    stack.append(((new_x, new_y), new_path))
+                    new_cost = cost + 1
+                    stack.append(((new_x, new_y), new_path, new_cost))
 
-    return None  # Goal not found at this depth
+    return [], 0, nodes_expanded, max_nodes_held_in_memory, None  # Goal not found at this depth
 
 # Node class for storing parent, cost, and coordinates
 class Node:
@@ -206,7 +209,7 @@ def astar(start, goal):
 #declaring different functions to call
 function_dict = {'bfs': bfs, 'iddfs': iddfs, 'astar': astar}
 
-path,total_cost, nodes_expanded, max_nodes_held_in_memory, runtime_ms = function_dict[algorithm](start, goal)
+path, total_cost, nodes_expanded, max_nodes_held_in_memory, runtime_ms = function_dict[algorithm](start, goal)
 
 
 # Print the results
