@@ -1,6 +1,7 @@
 from collections import deque
 import sys, heapq, time
 
+# Node class for storing parent, cost, and coordinates
 class Node:
     def __init__(self, x, y, parent, cost):
         self.x = x
@@ -88,9 +89,11 @@ def bfs(start, goal):
 
     return []  # If the goal cannot be reached, return an empty path
 
+# Calculate Heuristic for A* Search
 def calculateHeuristic(node, goal):
     return abs(node[0]-goal[0]) + abs(node[1]-goal[1])
 
+# Calculate path from last Node found
 def calculatePath(end_node):
     path = []
     current_node = end_node
@@ -100,6 +103,7 @@ def calculatePath(end_node):
     path.reverse()
     return path
 
+# Calculate cost of path from last Node found
 def calculateTotalCost(end_node):
     total_cost = 0
     current_node = end_node
@@ -108,37 +112,44 @@ def calculateTotalCost(end_node):
         current_node = current_node.parent
     return total_cost
 
+# A* Search Function
 def astar(start, goal):
     start_time = time.time()
     queue = []
-    start_node = Node(start[0], start[1], None, grid[start[0]][start[1]])
-    heapq.heappush(queue, (start_node.cost, id(start_node), start_node))
+    start_node = Node(start[0], start[1], None, grid[start[0]][start[1]]) # Create start node from start coordinates
+    heapq.heappush(queue, (start_node.cost, id(start_node), start_node)) # Push start node into priority queue with its cost
     nodes_expanded = 0
-    visited = set()
+    visited = set() # Set of visited coordinates to avoid visiting again
     end_time = 0
     max_nodes_held_in_memory = 0
 
     while queue:
-        max_nodes_held_in_memory = max(max_nodes_held_in_memory, len(queue))
+        max_nodes_held_in_memory = max(max_nodes_held_in_memory, len(queue)) # Update the maximum number of nodes held in memory
         nodes_expanded += 1
-        current_node = heapq.heappop(queue)[2]
+        current_node = heapq.heappop(queue)[2] # Get the node from priority queue with least cost
         
-        visited.add(current_node.getPos())
+        visited.add(current_node.getPos()) # Add node's coordinates to visited set
 
+        # Return when current node coordinates match the goal coordinates
         if current_node.getPos() == goal:
             end_time = time.time()
-            runtime_ms = (end_time-start_time)*1000
+            runtime_ms = (end_time-start_time)*1000 # Calculate runtime in milliseconds
             return calculatePath(current_node), calculateTotalCost(current_node), nodes_expanded, runtime_ms, max_nodes_held_in_memory
         
+        # Iterate through possible moves
         for dx, dy in moves:
-            new_x, new_y = current_node.x + dx, current_node.y + dy
+            new_x, new_y = current_node.x + dx, current_node.y + dy # Calculate the neighbor coordinates
             
+            # Check that coordinates are valid and not yet visited
             if is_valid(new_x, new_y) and (new_x, new_y) not in visited:
-                new_node = Node(new_x, new_y, current_node, 0)
-                new_node.cost = grid[new_x][new_y] + calculateHeuristic(current_node.getPos(), (new_x, new_y))
+                new_node = Node(new_x, new_y, current_node, 0) # Create node using the neighbor coordinates
+                new_node.cost = grid[new_x][new_y] + calculateHeuristic(current_node.getPos(), (new_x, new_y)) # Calculate cost of node traversal
 
-                if (new_node.cost, (new_x, new_y)) not in queue:
+                # If node is not in queue already, add it with the cost
+                if (new_node.cost, id(new_node), new_node) not in queue:
                     heapq.heappush(queue, (new_node.cost, id(new_node), new_node))
+
+    # Return if search failed
     end_time = time.time()
     runtime_ms = (end_time-start_time)*1000
     return [], 0, nodes_expanded, runtime_ms, max_nodes_held_in_memory
