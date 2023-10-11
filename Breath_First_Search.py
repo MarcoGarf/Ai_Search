@@ -1,5 +1,15 @@
 from collections import deque
-import sys
+import sys, heapq, time
+
+class Node:
+    def __init__(self, x, y, parent, cost):
+        self.x = x
+        self.y = y
+        self.parent = parent
+        self.cost = cost
+    
+    def getPos(self):
+        return (self.x, self.y)
 
 def read_map(file_name):
     with open(file_name, 'r') as file:
@@ -78,12 +88,70 @@ def bfs(start, goal):
 
     return []  # If the goal cannot be reached, return an empty path
 
+def calculateHeuristic(node, goal):
+    return abs(node[0]-goal[0]) + abs(node[1]-goal[1])
+
+def calculatePath(end_node):
+    path = []
+    current_node = end_node
+    while current_node != None:
+        path.append(current_node.getPos())
+        current_node = current_node.parent
+    path.reverse()
+    return path
+
+def calculateTotalCost(end_node):
+    total_cost = 0
+    current_node = end_node
+    while current_node != None:
+        total_cost += current_node.cost
+        current_node = current_node.parent
+    return total_cost
+
+def astar(start, goal):
+    start_time = time.time()
+    queue = []
+    start_node = Node(start[0], start[1], None, grid[start[0]][start[1]])
+    heapq.heappush(queue, (start_node.cost, id(start_node), start_node))
+    nodes_expanded = 0
+    visited = set()
+    end_time = 0
+    max_nodes_held_in_memory = 0
+
+    while queue:
+        max_nodes_held_in_memory = max(max_nodes_held_in_memory, len(queue))
+        nodes_expanded += 1
+        current_node = heapq.heappop(queue)[2]
+        
+        visited.add(current_node.getPos())
+
+        if current_node.getPos() == goal:
+            end_time = time.time()
+            runtime_ms = (end_time-start_time)*1000
+            return calculatePath(current_node), calculateTotalCost(current_node), nodes_expanded, runtime_ms, max_nodes_held_in_memory
+        
+        for dx, dy in moves:
+            new_x, new_y = current_node.x + dx, current_node.y + dy
+            
+            if is_valid(new_x, new_y) and (new_x, new_y) not in visited:
+                new_node = Node(new_x, new_y, current_node, 0)
+                new_node.cost = grid[new_x][new_y] + calculateHeuristic(current_node.getPos(), (new_x, new_y))
+
+                if (new_node.cost, (new_x, new_y)) not in queue:
+                    heapq.heappush(queue, (new_node.cost, id(new_node), new_node))
+    end_time = time.time()
+    runtime_ms = (end_time-start_time)*1000
+    return [], 0, nodes_expanded, runtime_ms, max_nodes_held_in_memory
+
+
+
 # Call the BFS function and get the result
-path = bfs(start, goal)
+path, cost_of_path, nodes_expanded, runtime_ms, max_nodes_held_in_memory = astar(start, goal)
 
 if path:
     print(f"The path from {start} to {goal} is:")
     for coordinate in path:
         print(coordinate)
+    print(f"The total cost was: {cost_of_path}, the number of nodes expanded was: {nodes_expanded}, the max nodes held in memory was: {max_nodes_held_in_memory}, and the runtime was: {runtime_ms} milliseconds.")
 else:
     print(f"There is no path from {start} to {goal}.")
