@@ -107,7 +107,6 @@ def dls(node, goal, depth_limit):
     max_nodes_held_in_memory = 0
     
     while stack:
-        print(stack)
         max_nodes_held_in_memory = max(max_nodes_held_in_memory, len(stack))    
 
         (x, y), path, cost = stack.pop()  # Pop the last coordinate and its corresponding path
